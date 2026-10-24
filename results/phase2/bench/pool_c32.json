@@ -1,0 +1,22 @@
+{
+  "mode": "pool",
+  "concurrency": 32,
+  "pool_size": 32,
+  "n": 256,
+  "failures": 0,
+  "pool_warmup_s": 1.83,
+  "wall_s": 18.37,
+  "exec_per_s": 13.9,
+  "latency_ms": {
+    "p50": 2397.6,
+    "p90": 2887.2,
+    "p99": 3192.8
+  },
+  "pool_wait_ms": {
+    "p50": 2298.3,
+    "p99": 3098.3,
+    "share_waited": 0.875
+  },
+  "host_cpu_util": 0.2,
+  "leftover_containers": 0
+}

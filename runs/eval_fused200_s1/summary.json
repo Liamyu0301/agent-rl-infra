@@ -1,0 +1,16 @@
+{
+  "model": "runs/eval_fused200_s1/merged",
+  "adapter": "runs/fused200_s1/final",
+  "prompt": "forced",
+  "n": 1319,
+  "wall_s": 102.7,
+  "accuracy": 0.6869,
+  "tool_use_rate": 0.9795,
+  "useful_episode_rate": 0.9613,
+  "tool_calls": 1373,
+  "useful_call_rate": 0.9294,
+  "bare_fence_rate": 0.0478,
+  "answer_format_rate": 0.9674,
+  "turns_mean": 2.028,
+  "model_tokens_mean": 369.9
+}

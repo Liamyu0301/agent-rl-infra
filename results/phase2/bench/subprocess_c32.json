@@ -1,0 +1,22 @@
+{
+  "mode": "subprocess",
+  "concurrency": 32,
+  "pool_size": null,
+  "n": 256,
+  "failures": 0,
+  "pool_warmup_s": 0.0,
+  "wall_s": 0.33,
+  "exec_per_s": 775.4,
+  "latency_ms": {
+    "p50": 38.4,
+    "p90": 55.1,
+    "p99": 69.6
+  },
+  "pool_wait_ms": {
+    "p50": 0.0,
+    "p99": 0.0,
+    "share_waited": 0.0
+  },
+  "host_cpu_util": 0.404,
+  "leftover_containers": 0
+}

@@ -1,0 +1,16 @@
+{
+  "model": "runs/eval_control200_s1/merged",
+  "adapter": "runs/control200_s1/final",
+  "prompt": "forced",
+  "n": 1319,
+  "wall_s": 145.8,
+  "accuracy": 0.6649,
+  "tool_use_rate": 0.9833,
+  "useful_episode_rate": 0.9826,
+  "tool_calls": 2479,
+  "useful_call_rate": 0.9972,
+  "bare_fence_rate": 0.0023,
+  "answer_format_rate": 0.9719,
+  "turns_mean": 2.875,
+  "model_tokens_mean": 427.5
+}

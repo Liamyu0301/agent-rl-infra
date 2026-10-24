@@ -1,0 +1,15 @@
+{
+  "model": "runs/eval_final_r2/merged",
+  "adapter": "runs/main/final",
+  "n": 1319,
+  "wall_s": 106.1,
+  "accuracy": 0.6907,
+  "tool_use_rate": 0.9682,
+  "useful_episode_rate": 0.9545,
+  "tool_calls": 1327,
+  "useful_call_rate": 0.9503,
+  "bare_fence_rate": 0.3776,
+  "answer_format_rate": 0.9583,
+  "turns_mean": 1.998,
+  "model_tokens_mean": 402.1
+}

@@ -1,0 +1,16 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "adapter": "",
+  "prompt": "optional",
+  "n": 1319,
+  "wall_s": 30.1,
+  "accuracy": 0.4799,
+  "tool_use_rate": 0.0023,
+  "useful_episode_rate": 0.0015,
+  "tool_calls": 3,
+  "useful_call_rate": 0.6667,
+  "bare_fence_rate": 0.0,
+  "answer_format_rate": 0.9598,
+  "turns_mean": 1.002,
+  "model_tokens_mean": 181.7
+}

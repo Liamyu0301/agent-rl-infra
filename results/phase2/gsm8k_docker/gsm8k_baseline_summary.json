@@ -1,0 +1,52 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "n": 100,
+  "config": {
+    "model": "Qwen/Qwen3-0.6B",
+    "n": 100,
+    "concurrency": 16,
+    "max_turns": 4,
+    "max_tokens": 1024,
+    "timeout": 10,
+    "out": "results/phase2/gsm8k_docker",
+    "sandbox": "docker"
+  },
+  "results": {
+    "no_tool": {
+      "accuracy": 0.52,
+      "strict_format_rate": 0.99,
+      "tool_use_rate": 0.0,
+      "tool_calls_total": 0,
+      "tool_success_rate": 0.0,
+      "accuracy_when_tool_used": null,
+      "bare_fence_rate": 0.0,
+      "avg_completion_tokens": 154.43,
+      "wall_seconds": 4.7,
+      "output_tokens_per_second": 3265.6
+    },
+    "python_tool": {
+      "accuracy": 0.56,
+      "strict_format_rate": 0.99,
+      "tool_use_rate": 0.0,
+      "tool_calls_total": 0,
+      "tool_success_rate": 0.0,
+      "accuracy_when_tool_used": null,
+      "bare_fence_rate": 0.0,
+      "avg_completion_tokens": 186.24,
+      "wall_seconds": 5.4,
+      "output_tokens_per_second": 3443.4
+    },
+    "python_tool_forced": {
+      "accuracy": 0.58,
+      "strict_format_rate": 0.94,
+      "tool_use_rate": 0.28,
+      "tool_calls_total": 43,
+      "tool_success_rate": 0.9534883720930233,
+      "accuracy_when_tool_used": 0.6428571428571429,
+      "bare_fence_rate": 0.24,
+      "avg_completion_tokens": 216.14,
+      "wall_seconds": 8.7,
+      "output_tokens_per_second": 2470.4
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "mode": "cold",
+  "concurrency": 64,
+  "pool_size": null,
+  "n": 512,
+  "failures": 0,
+  "pool_warmup_s": 0.0,
+  "wall_s": 38.25,
+  "exec_per_s": 13.4,
+  "latency_ms": {
+    "p50": 4613.6,
+    "p90": 5488.7,
+    "p99": 6336.8
+  },
+  "pool_wait_ms": {
+    "p50": 0.0,
+    "p99": 0.0,
+    "share_waited": 0.0
+  },
+  "host_cpu_util": 0.138,
+  "leftover_containers": 0
+}

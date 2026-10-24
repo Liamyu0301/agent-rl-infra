@@ -1,0 +1,22 @@
+{
+  "mode": "workers",
+  "concurrency": 64,
+  "pool_size": 64,
+  "n": 512,
+  "failures": 0,
+  "pool_warmup_s": 3.64,
+  "wall_s": 6.87,
+  "exec_per_s": 74.5,
+  "latency_ms": {
+    "p50": 812.9,
+    "p90": 1057.0,
+    "p99": 1309.6
+  },
+  "pool_wait_ms": {
+    "p50": 0.0,
+    "p99": 0.0,
+    "share_waited": 0.0
+  },
+  "host_cpu_util": 0.923,
+  "leftover_containers": 0
+}

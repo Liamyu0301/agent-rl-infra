@@ -1,0 +1,16 @@
+{
+  "model": "runs/eval_final_optional/merged",
+  "adapter": "runs/main/final",
+  "prompt": "optional",
+  "n": 1319,
+  "wall_s": 64.2,
+  "accuracy": 0.6914,
+  "tool_use_rate": 0.2896,
+  "useful_episode_rate": 0.2866,
+  "tool_calls": 394,
+  "useful_call_rate": 0.9594,
+  "bare_fence_rate": 0.1948,
+  "answer_format_rate": 0.9697,
+  "turns_mean": 1.296,
+  "model_tokens_mean": 317.2
+}

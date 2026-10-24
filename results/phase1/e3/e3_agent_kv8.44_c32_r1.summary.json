@@ -1,0 +1,54 @@
+{
+  "tag": "e3_agent_kv8.44_c32_r1",
+  "config": {
+    "workload": "agent",
+    "model": "Qwen/Qwen3-0.6B",
+    "concurrency": 32,
+    "min_requests": 256,
+    "turns": 8,
+    "prefix": 2000,
+    "task": 100,
+    "tool_result": 300,
+    "output": 100,
+    "gap_min": 0.5,
+    "gap_max": 1.5,
+    "seed": 0,
+    "warmup": true,
+    "tag": "e3_agent_kv8.44_c32_r1",
+    "out": "results/phase1/e3"
+  },
+  "n_requests": 256,
+  "n_sessions": 32,
+  "token_check_failures": 0,
+  "wall_s": 25.02,
+  "client_cpu_util": 0.111,
+  "avg_in_flight": 19.86,
+  "req_per_s": 10.23,
+  "output_tok_per_s": 1023.2,
+  "prompt_tok_per_s": 35813.2,
+  "ttft_ms": {
+    "p50": 59.7,
+    "p90": 179.4,
+    "p99": 725.0,
+    "mean": 91.2
+  },
+  "tpot_ms": {
+    "p50": 16.3,
+    "p90": 35.1,
+    "p99": 43.4,
+    "mean": 18.7
+  },
+  "e2e_ms": {
+    "p50": 1684.8,
+    "p90": 3566.7,
+    "p99": 4453.7,
+    "mean": 1940.6
+  },
+  "prefix_cache_hit_rate": 0.8342,
+  "prefix_cache_query_tokens": 896000.0,
+  "preemptions": 1.0,
+  "kv_usage_max": 0.988,
+  "kv_usage_mean": 0.488,
+  "running_max": 27.0,
+  "waiting_max": 3.0
+}

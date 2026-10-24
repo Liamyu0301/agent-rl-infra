@@ -1,0 +1,80 @@
+{
+  "tag": "smoke_open_gate2",
+  "config": {
+    "workload": "agent",
+    "model": "Qwen/Qwen3-0.6B",
+    "concurrency": 8,
+    "min_requests": 256,
+    "turns": 3,
+    "prefix": 2000,
+    "task": 100,
+    "tool_result": 300,
+    "output": 100,
+    "gap_min": 0.2,
+    "gap_max": 0.4,
+    "seed": 0,
+    "arrival_rate": 2.0,
+    "n_sessions": 6,
+    "gate": 2,
+    "slo_ttft_ms": 500.0,
+    "warmup": true,
+    "tag": "smoke_open_gate2",
+    "out": "results/phase1/smoke"
+  },
+  "n_requests": 18,
+  "n_sessions": 6,
+  "token_check_failures": 0,
+  "wall_s": 6.08,
+  "client_cpu_util": 0.051,
+  "avg_in_flight": 1.06,
+  "req_per_s": 2.96,
+  "output_tok_per_s": 295.9,
+  "prompt_tok_per_s": 7397.3,
+  "ttft_ms": {
+    "p50": 20.5,
+    "p90": 24.7,
+    "p99": 25.1,
+    "mean": 20.6
+  },
+  "tpot_ms": {
+    "p50": 3.4,
+    "p90": 3.7,
+    "p99": 3.7,
+    "mean": 3.4
+  },
+  "e2e_ms": {
+    "p50": 357.4,
+    "p90": 385.7,
+    "p99": 387.9,
+    "mean": 358.4
+  },
+  "prefix_cache_hit_rate": 0.9045,
+  "prefix_cache_query_tokens": 45000.0,
+  "preemptions": 0.0,
+  "kv_usage_max": 0.048,
+  "kv_usage_mean": 0.027,
+  "running_max": 2.0,
+  "waiting_max": 0.0,
+  "user_ttft_ms": {
+    "p50": 22.6,
+    "p90": 1112.0,
+    "p99": 1687.4,
+    "mean": 279.9
+  },
+  "slo_ttft_ms": 500.0,
+  "slo_attainment": 0.7778,
+  "goodput_req_per_s": 2.3,
+  "gate_wait_ms": {
+    "p50": 808.7,
+    "p90": 1671.1,
+    "p99": 1671.1,
+    "mean": 777.9
+  },
+  "session_e2e_ms": {
+    "p50": 2391.1,
+    "p90": 3450.4,
+    "p99": 3450.4,
+    "mean": 2460.7
+  },
+  "sessions_per_s": 0.986
+}

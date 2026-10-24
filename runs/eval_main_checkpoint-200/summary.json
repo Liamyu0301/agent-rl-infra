@@ -1,0 +1,15 @@
+{
+  "model": "runs/eval_main_checkpoint-200/merged",
+  "adapter": "runs/main/checkpoint-200",
+  "n": 1319,
+  "wall_s": 111.4,
+  "accuracy": 0.6846,
+  "tool_use_rate": 0.9621,
+  "useful_episode_rate": 0.9522,
+  "tool_calls": 1322,
+  "useful_call_rate": 0.9622,
+  "bare_fence_rate": 0.931,
+  "answer_format_rate": 0.9538,
+  "turns_mean": 1.997,
+  "model_tokens_mean": 407.7
+}

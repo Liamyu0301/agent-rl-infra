@@ -1,0 +1,51 @@
+{
+  "model": "Qwen/Qwen3-0.6B",
+  "n": 100,
+  "config": {
+    "model": "Qwen/Qwen3-0.6B",
+    "n": 100,
+    "concurrency": 16,
+    "max_turns": 4,
+    "max_tokens": 1024,
+    "timeout": 10,
+    "out": "results/run2"
+  },
+  "results": {
+    "no_tool": {
+      "accuracy": 0.51,
+      "strict_format_rate": 1.0,
+      "tool_use_rate": 0.0,
+      "tool_calls_total": 0,
+      "tool_success_rate": 0.0,
+      "accuracy_when_tool_used": null,
+      "bare_fence_rate": 0.0,
+      "avg_completion_tokens": 153.16,
+      "wall_seconds": 46.9,
+      "output_tokens_per_second": 326.3
+    },
+    "python_tool": {
+      "accuracy": 0.55,
+      "strict_format_rate": 0.97,
+      "tool_use_rate": 0.0,
+      "tool_calls_total": 0,
+      "tool_success_rate": 0.0,
+      "accuracy_when_tool_used": null,
+      "bare_fence_rate": 0.0,
+      "avg_completion_tokens": 187.81,
+      "wall_seconds": -35.1,
+      "output_tokens_per_second": -535.2
+    },
+    "python_tool_forced": {
+      "accuracy": 0.56,
+      "strict_format_rate": 0.96,
+      "tool_use_rate": 0.33,
+      "tool_calls_total": 60,
+      "tool_success_rate": 0.8,
+      "accuracy_when_tool_used": 0.6060606060606061,
+      "bare_fence_rate": 0.24,
+      "avg_completion_tokens": 219.58,
+      "wall_seconds": 7.0,
+      "output_tokens_per_second": 3137.4
+    }
+  }
+}
