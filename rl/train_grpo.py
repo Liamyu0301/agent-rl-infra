@@ -24,6 +24,9 @@ def main():
     ap.add_argument("--grad-accum", type=int, default=8)
     ap.add_argument("--max-completion", type=int, default=1024)
     ap.add_argument("--vllm-mem", type=float, default=0.3)
+    ap.add_argument("--vllm-mode", choices=["colocate", "server"], default="colocate",
+                    help="server=训推分离：生成交给独立的 vLLM 服务（需带 --weight-transfer-config 启动）")
+    ap.add_argument("--vllm-server-url", default="http://localhost:8000")
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--save-steps", type=int, default=0)
     ap.add_argument("--seed", type=int, default=42, help="随机种子（影响数据顺序和初始化）；用于重复实验")
@@ -88,7 +91,8 @@ def main():
         num_generations=args.num_generations, per_device_train_batch_size=args.per_device_batch,
         gradient_accumulation_steps=args.grad_accum, max_completion_length=args.max_completion,
         temperature=1.0, beta=0.0, bf16=True, gradient_checkpointing=True,
-        use_vllm=True, vllm_mode="colocate", vllm_gpu_memory_utilization=args.vllm_mem,
+        use_vllm=True, vllm_mode=args.vllm_mode, vllm_gpu_memory_utilization=args.vllm_mem,
+        vllm_server_base_url=args.vllm_server_url if args.vllm_mode == "server" else None,
         vllm_max_model_length=2048, logging_steps=1, report_to="none",
         save_strategy="steps" if args.save_steps else "no", save_steps=args.save_steps or 500,
         reward_weights=[1.0, 1.0], seed=args.seed,

@@ -1,4 +1,6 @@
-"""3.1 自检：不训练，用独立的 vLLM 实例跑一批 rollout，检查长度一致性、模板一致性、奖励分解和耗时。"""
+"""3.1 自检：不训练，用独立的 vLLM 实例跑一批 rollout，检查长度一致性、模板一致性、奖励分解和耗时。
+加 --server URL 时改为通过 vLLM 服务端生成（训推分离模式的生成路径）。"""
+import argparse
 import os
 import sys
 import time
@@ -6,7 +8,6 @@ from types import SimpleNamespace
 
 os.environ.setdefault("VLLM_USE_FLASHINFER_SAMPLER", "0")
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from vllm import LLM  # noqa: E402
 from transformers import AutoTokenizer  # noqa: E402
 
 from rl.agent_rollout import correctness_reward, load_gsm8k, make_rollout_func, tool_reward  # noqa: E402
@@ -16,10 +17,18 @@ MODEL, N_PROMPTS, G = "Qwen/Qwen3-0.6B", 16, 4
 
 
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--server", default=None, help="vLLM 服务地址，如 http://localhost:8000；不给则在本进程起 vLLM")
+    server = ap.parse_args().server
 
     tok = AutoTokenizer.from_pretrained(MODEL)
-    llm = LLM(MODEL, gpu_memory_utilization=0.5, max_model_len=4096)
-    trainer = SimpleNamespace(processing_class=tok, vllm_generation=SimpleNamespace(llm=llm),
+    if server:
+        from trl.generation.vllm_client import VLLMClient
+        gen = SimpleNamespace(mode="server", vllm_client=VLLMClient(base_url=server))
+    else:
+        from vllm import LLM
+        gen = SimpleNamespace(llm=LLM(MODEL, gpu_memory_utilization=0.5, max_model_len=4096))
+    trainer = SimpleNamespace(processing_class=tok, vllm_generation=gen,
                               args=SimpleNamespace(temperature=1.0, top_p=1.0, max_completion_length=1024))
     ds = load_gsm8k("train").select(range(N_PROMPTS))
     prompts = [x["prompt"] for x in ds for _ in range(G)]   # 与 GRPO 一样：每题重复 G 次

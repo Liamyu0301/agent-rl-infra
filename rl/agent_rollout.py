@@ -17,6 +17,7 @@ import re
 import sys
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from sandbox.pool import WorkerPool  # noqa: E402
@@ -75,12 +76,34 @@ def extract_answer(text):
         return None
 
 
+def _generate(trainer, prompts, max_tokens):
+    """每个 prompt（token id 列表）生成一段回复，返回 [(token_ids, 每个 token 的 logprob)]。
+    同卡模式（colocate）直接调本进程里的 vLLM；服务端模式（训推分离）经 HTTP 调 vLLM 服务。"""
+    args, gen = trainer.args, trainer.vllm_generation
+    if getattr(gen, "mode", "colocate") == "server":
+        # VLLMClient.generate 一次请求只能用一个 max_tokens，而各回合剩余长度不同：
+        # 每个回合单独发请求、并发发出，由服务端自己拼批
+        def one(p, m):
+            o = gen.vllm_client.generate([p], temperature=args.temperature, top_p=args.top_p, max_tokens=m, logprobs=0)
+            return o["completion_ids"][0], [lp[0] for lp in o["logprobs"][0]]
+
+        with ThreadPoolExecutor(max_workers=min(64, len(prompts))) as ex:
+            return list(ex.map(one, prompts, max_tokens))
+    from vllm import SamplingParams
+    params = [SamplingParams(temperature=args.temperature, top_p=args.top_p, logprobs=0, max_tokens=m)
+              for m in max_tokens]
+    outs = gen.llm.generate([{"prompt_token_ids": p} for p in prompts], sampling_params=params, use_tqdm=False)
+    res = []
+    for o in outs:
+        c = o.outputs[0]
+        toks = list(c.token_ids)
+        res.append((toks, [c.logprobs[i][t].logprob for i, t in enumerate(toks)] if c.logprobs else [0.0] * len(toks)))
+    return res
+
+
 def make_rollout_func(log_path=None):
     def rollout_func(prompts, trainer):
-        from vllm import SamplingParams
-
         tok = trainer.processing_class
-        llm = trainer.vllm_generation.llm
         args = trainer.args
         im_end = tok.convert_tokens_to_ids("<|im_end|>")
         max_len = args.max_completion_length
@@ -96,17 +119,12 @@ def make_rollout_func(log_path=None):
             active = [e for e in eps if not e["done"]]
             if not active:
                 break
-            params = [SamplingParams(temperature=args.temperature, top_p=args.top_p, logprobs=0,
-                                     max_tokens=max(1, max_len - len(e["completion_ids"]))) for e in active]
             t0 = time.perf_counter()
-            outs = llm.generate([{"prompt_token_ids": e["prompt_ids"] + e["completion_ids"]} for e in active],
-                                sampling_params=params, use_tqdm=False)
+            outs = _generate(trainer, [e["prompt_ids"] + e["completion_ids"] for e in active],
+                             [max(1, max_len - len(e["completion_ids"])) for e in active])
             gen_s += time.perf_counter() - t0
             pending = []
-            for e, o in zip(active, outs):
-                c = o.outputs[0]
-                toks = list(c.token_ids)
-                lps = [c.logprobs[i][t].logprob for i, t in enumerate(toks)] if c.logprobs else [0.0] * len(toks)
+            for e, (toks, lps) in zip(active, outs):
                 e["completion_ids"] += toks
                 e["logprobs"] += lps
                 e["env_mask"] += [1] * len(toks)

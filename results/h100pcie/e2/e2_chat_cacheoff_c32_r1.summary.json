@@ -1,0 +1,67 @@
+{
+  "tag": "e2_chat_cacheoff_c32_r1",
+  "config": {
+    "workload": "chat",
+    "model": "Qwen/Qwen3-0.6B",
+    "concurrency": 32,
+    "min_requests": 256,
+    "turns": 8,
+    "prefix": 2000,
+    "task": 100,
+    "tool_result": 300,
+    "output": 100,
+    "gap_min": 0.5,
+    "gap_max": 1.5,
+    "seed": 0,
+    "arrival_rate": 0.0,
+    "n_sessions": 96,
+    "gate": 0,
+    "slo_ttft_ms": 500.0,
+    "warmup": true,
+    "tag": "e2_chat_cacheoff_c32_r1",
+    "out": "results/h100pcie/e2"
+  },
+  "n_requests": 256,
+  "n_sessions": 32,
+  "token_check_failures": 0,
+  "wall_s": 15.87,
+  "client_cpu_util": 0.54,
+  "avg_in_flight": 13.2,
+  "req_per_s": 16.13,
+  "output_tok_per_s": 1613.4,
+  "prompt_tok_per_s": 56468.0,
+  "ttft_ms": {
+    "p50": 71.8,
+    "p90": 341.3,
+    "p99": 443.2,
+    "mean": 129.8
+  },
+  "tpot_ms": {
+    "p50": 7.0,
+    "p90": 9.7,
+    "p99": 10.1,
+    "mean": 7.0
+  },
+  "e2e_ms": {
+    "p50": 771.6,
+    "p90": 1234.1,
+    "p99": 1343.3,
+    "mean": 817.9
+  },
+  "prefix_cache_hit_rate": null,
+  "prefix_cache_query_tokens": 0.0,
+  "preemptions": 3.0,
+  "kv_usage_max": 0.999,
+  "kv_usage_mean": 0.598,
+  "running_max": 21.0,
+  "waiting_max": 5.0,
+  "user_ttft_ms": {
+    "p50": 71.8,
+    "p90": 341.3,
+    "p99": 443.2,
+    "mean": 129.8
+  },
+  "slo_ttft_ms": 500.0,
+  "slo_attainment": 0.9961,
+  "goodput_req_per_s": 16.07
+}
