@@ -55,6 +55,7 @@ def main():
 
     # 模板一致性：手工拼接的序列 vs 官方 chat 模板渲染同一段对话
     idx = next((i for i, c in enumerate(out["tool_calls"]) if c > 0), None)
+    same = None
     if idx is None:
         print("no episode used a tool; template check skipped")
     else:
@@ -88,6 +89,8 @@ def main():
     if ar._pool is not None:
         import asyncio
         asyncio.run_coroutine_threadsafe(ar._pool.close(), ar._loop).result()
+    # 检查不通过时以非 0 退出，脚本化运行时 exit code 才有意义（模板检查因无工具调用而跳过时不算失败）
+    sys.exit(0 if lens_ok and same is not False else 1)
 
 
 if __name__ == "__main__":  # vLLM 用 spawn 启动引擎子进程，主逻辑必须放在这里
