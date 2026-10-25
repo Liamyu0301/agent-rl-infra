@@ -352,7 +352,8 @@ E0 自检通过：prompt/输出 token 数全部精确；修复随机种子冲突
 - 服务端启动要求（vLLM 0.32 + TRL 1.16）：--weight-transfer-config '{"backend":"nccl"}'，**并且**要设 VLLM_SERVER_DEV_MODE=1，否则 /init_weight_transfer_engine 等 RL 接口不会注册
 - 结果（只拿到了退出码，详细日志随实例一起被清空）：
   - 同卡模式 5 步训练：成功（exit 0）
-  - test_rollout.py --server（服务端生成 + 长度一致性 + 模板一致性自检）：exit 0
+  - test_rollout.py --server（服务端生成 + 长度一致性 + 模板一致性自检）：exit 0。但这个脚本只打印检查结果、检查不通过也不会报错，
+    输出又没保存下来 → 只能说明"服务端生成路径能跑完一批多轮 rollout 而不崩溃"，**不能**说明长度 / 模板检查通过
   - 服务端模式 5 步训练：**失败（exit 1），原因未知**。待查的首要假设：单卡上训练进程（rank 0）和 vLLM（rank 1）共用一张 GPU，NCCL 可能拒绝（duplicate GPU）；在拿到日志之前这只是假设
 - 未完成：logprob 差异对比（同卡 vs 服务端）
 
