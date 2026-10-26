@@ -58,8 +58,12 @@ pull setup.log "$A/"
 # 4. 新登录启动流程（docker 组此时已生效；再包一层 sg docker 以防万一）
 printf '%s\n' 'pgrep -f "bash .*tier2/chain.sh" > /dev/null && echo alive || echo dead' > "$A/alive.sh"
 push "$A/alive.sh" "ubuntu@$IP:"
-rsh 'cd ~/agent-rl-infra && nohup sg docker -c "bash scripts/tier2/chain.sh > ~/chain.log 2>&1" > /dev/null 2>&1 < /dev/null & echo started'
-log "chain started"
+# 这条 ssh 在实测中一直挂到链条结束才返回（第一次开机时本脚本因此 6 分钟没同步）：
+# 远程用 setsid 脱离会话，本地也放到后台，不等它返回
+rsh 'cd ~/agent-rl-infra && setsid nohup sg docker -c "bash scripts/tier2/chain.sh > ~/chain.log 2>&1" > /dev/null 2>&1 < /dev/null &' \
+  > "$A/start_chain.ssh.log" 2>&1 &
+sleep 15
+log "chain started (ssh pid $!)"
 
 # 5. 每分钟同步结果；按标记决定何时终止
 # 拉整个 results/：其他子目录与本地一致，rsync 不会重复传；避免依赖远程通配符展开

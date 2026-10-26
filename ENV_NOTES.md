@@ -396,3 +396,26 @@ E0 自检通过：prompt/输出 token 数全部精确；修复随机种子冲突
 - pgrep -f 会匹配到 ssh 命令行本身（命令文本里包含要找的模式）→ 检查残留进程的命令要放进远程脚本文件里执行
 - usermod 加入 docker 组要重新登录才生效：同一会话里接着跑的脚本没有 docker 权限 → 用 sg docker -c 或新开 ssh
 - 花费：2026-10-24 23:24 → 2026-10-25 02:24，3.00 h × $3.29 = $9.87（约 71 元）；补测 2026-10-25 19:49 → 20:25，0.60 h × $3.29 = $1.96（约 14 元）。合计 $11.83（约 85 元），实际扣费以 Lambda 控制台为准
+
+## 第 2 档：训推分离（2×H100 SXM5，us-southeast-1）
+脚本：scripts/tier2/（Mac 端 mac_orchestrate.sh 总控；实例上 chain.sh：G0 → 2.1/2.2 → G1 → 2.3 → 2.4）。方案与关卡规则见仓库外的计划文件和 scripts/tier2/analyze.py。
+
+### 第一次开机（2026-10-25 21:15 → 21:24，G0 不通过，自动终止；0.15 h × $8.38 = $1.29）
+- G0：0.6B 同卡 5 步 vs 服务端 5 步（都用 lr 1e-3，让权重 5 步内明显变化）。两次训练都跑完、服务端 rollout 自检 exit 0，
+  但 vLLM 与训练端的 logprob 差：同卡 0.013 / 0.015 / 0.011 / 0.009 / 0.011（平稳），服务端 0.012 / 0.032 / 0.049 / 0.055 / 0.071（逐步变大）
+  → 服务端生成用的一直是接近原始模型的旧权重。第 1 步两者相同，因为 LoRA 的 B 初始为 0，合并后权重等于原模型
+- 排查（离线，没有再开机）：
+  1. 服务端日志每次同步都报 170 条 "Attempted to load weight ... float32 into parameter with dtype bfloat16"（TRL 默认按 fp32 加载训练模型）。
+     读 vLLM 0.32 源码（model_executor/models/utils.py）：这只是警告，随后照常调用 weight_loader 转换后加载 → **排除**
+  2. 每次同步后 /reset_prefix_cache 都返回 200，日志有 "Successfully reset prefix cache" → **排除**
+  3. **根因**：TRL 1.16 服务端模式经 vLLM 的 packed_nccl_broadcast_producer 发送权重。vLLM 的 pack_tensors 先收集参数的视图（.view(uint8)，不拷贝），
+     凑满 1 GB 或迭代器耗尽后才 torch.cat；TRL 处理 PEFT 的迭代器是"merge_adapter → 逐个 yield 参数 → 耗尽时原地 unmerge_adapter"。
+     最后一块缓冲区是在迭代器耗尽时结束的，torch.cat 发生在 unmerge 之后 → 最后一块里 LoRA 作用的权重发出去的是未合并的原权重。
+     同卡模式在 unmerge 之前就逐个同步拷贝完了，所以不受影响。vLLM 0.31 的这段代码基本相同（只差 view 的顺序），不是我们用了 TRL 支持范围外的 0.32 导致的
+- CPU 复现（scripts/tier2/repro_pack_race.py：真实的 TRL 迭代器 + 从 vLLM 源码原样取出的 pack_tensors，6 层带 LoRA 的小模型）：
+  最后一块因缓冲区满而结束（buf 40 KB）时 0 个错；因迭代器耗尽而结束时 buf 50 KB 错 2 个、10 MB（只有 1 块）错全部 6 个 LoRA 权重；加 clone 后都是 0 个错
+  0.6B fp32 约 2.4 GB、1.7B 约 8 GB，按 1 GB 分块最后一块必然是迭代器耗尽时结束的 → 每次同步都会触发
+- 修复（rl/train_grpo.py，只在 --vllm-mode server 时生效，不改 TRL 源码）：包一层 TRL 的参数迭代器，交出前 clone 并 torch.cuda.synchronize()
+  （同步顺带避免打包所在 CUDA 流与 merge/unmerge 所在流之间的竞争）。代价：同步时多一次显存拷贝，计入"权重同步"段。**尚未在 GPU 上验证**，由下一次开机的 G0 验证
+- 另一个问题（总控脚本）：启动链条的那条 ssh 一直挂到链条结束才返回，总控因此在 G0 期间没有每分钟同步。这次 G0 失败、链条很快退出，没有造成损失；
+  已改为远程 setsid + 本地后台执行

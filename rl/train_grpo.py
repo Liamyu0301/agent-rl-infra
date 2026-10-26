@@ -111,6 +111,20 @@ def main():
         callbacks=[StepTimer()],
         **extra,
     )
+    if args.vllm_mode == "server":
+        # 修复服务端模式下 PEFT 权重同步拿到旧权重的问题（第 2 档 G0 发现，CPU 上已复现）：
+        # vLLM 的 pack_tensors 先收集参数的视图、凑满缓冲区或迭代器耗尽后才 torch.cat；最后一块是迭代器耗尽时结束的，
+        # 而 TRL 的迭代器在耗尽那一刻原地 unmerge LoRA → 最后一块发出去的是未合并的原权重。
+        # 交出前先 clone（并等 GPU 拷贝完成，避免与打包所在的 CUDA 流竞争），之后的 unmerge 就不影响已交出的张量
+        iter_params = trainer.vllm_generation._iter_named_params
+
+        def iter_params_cloned():
+            for name, t in iter_params():
+                c = t.clone()
+                torch.cuda.synchronize()
+                yield name, c
+
+        trainer.vllm_generation._iter_named_params = iter_params_cloned
     if args.profile:
         # 分段：_prepare_inputs 在缓冲区空时触发整轮"生成+打分"（含权重同步、rollout、旧 logprob 重算、算奖励）；
         # training_step 包含 _prepare_inputs，所以 前向+反向 = training_step − prepare_inputs。
