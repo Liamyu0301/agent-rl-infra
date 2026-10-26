@@ -1,0 +1,18 @@
+{
+  "model": "Qwen/Qwen3-1.7B",
+  "max_steps": 20,
+  "lr": 3e-05,
+  "num_generations": 8,
+  "per_device_batch": 8,
+  "grad_accum": 8,
+  "max_completion": 1024,
+  "vllm_mem": 0.3,
+  "vllm_mode": "server",
+  "vllm_server_url": "http://localhost:8000",
+  "lora_r": 16,
+  "save_steps": 0,
+  "seed": 42,
+  "fused_is": "off",
+  "profile": true,
+  "out": "runs/tier2/prof17_server"
+}

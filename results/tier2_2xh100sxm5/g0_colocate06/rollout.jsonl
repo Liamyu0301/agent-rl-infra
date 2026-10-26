@@ -1,0 +1,5 @@
+{"t": 1792992235.564252, "episodes": 64, "gen_s": 1.927, "tool_s": 0.493, "tool_calls": 20, "useful_calls": 11, "turns_mean": 1.3125, "completion_tokens": 13666, "model_tokens": 13235}
+{"t": 1792992247.2374494, "episodes": 64, "gen_s": 4.863, "tool_s": 2.896, "tool_calls": 175, "useful_calls": 29, "turns_mean": 3.25, "completion_tokens": 38224, "model_tokens": 32244}
+{"t": 1792992258.4850085, "episodes": 64, "gen_s": 4.296, "tool_s": 1.631, "tool_calls": 96, "useful_calls": 59, "turns_mean": 2.1875, "completion_tokens": 25945, "model_tokens": 21068}
+{"t": 1792992274.4553618, "episodes": 64, "gen_s": 8.558, "tool_s": 2.158, "tool_calls": 128, "useful_calls": 80, "turns_mean": 2.71875, "completion_tokens": 58490, "model_tokens": 52131}
+{"t": 1792992289.9132454, "episodes": 64, "gen_s": 7.002, "tool_s": 3.204, "tool_calls": 199, "useful_calls": 115, "turns_mean": 3.40625, "completion_tokens": 32380, "model_tokens": 23413}

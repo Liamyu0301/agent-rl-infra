@@ -1,0 +1,53 @@
++ timeout -s KILL 600 python rl/test_rollout.py --server http://localhost:8000 --model Qwen/Qwen3-1.7B
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/__init__.py:22: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:48: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_STATEFUL_TRAINER_ENGINE = is_vllm_available(min_version="0.28.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:57: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_RESET_PREFIX_CACHE_SUCCESS = is_vllm_available(min_version="0.26.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:215: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if not is_vllm_available():
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+episodes=64 wall=5.1s  lengths consistent=True  env(masked) tokens=1251
+correctness mean=0.562  tool_reward mean=0.006  episodes with >=1 tool call=95.31%  useful/total calls=2/63  turns mean=1.98
+groups with reward variance (learning signal): 10/16
+{"t": 1792992944.7979686, "episodes": 64, "gen_s": 3.647, "tool_s": 1.358, "tool_calls": 63, "useful_calls": 2, "turns_mean": 1.984375, "completion_tokens": 16724, "model_tokens": 15473}
+template check on episode 0: identical=True
+---- sample transcript (rollout side) ----
+<|im_start|>system
+You are a careful math solver. You can run Python code: write it in a ```python code block. The code will be executed and its printed output returned to you inside <output></output> tags. Use print() to see results. When you are done, write the final numeric answer on its own line in the form 'Answer: 42'. You MUST write a ```python code block to compute the result before giving the answer.<|im_end|>
+<|im_start|>user
+Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+```python
+# Number of clips sold in April
+clips_april = 48
+
+# Number of clips sold in May (half as many as April)
+clips_may = clips_april / 2
+
+# Total clips sold
+total_clips = clips_april + clips_may
+
+total_clips
+```<|im_end|>
+<|im_start|>user
+<output>
+
+</output><|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+The total number of clips Natalia sold in April and May is 48 + 24 = 72.
+
+Answer: 72<|im_end|>
