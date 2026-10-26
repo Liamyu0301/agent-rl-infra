@@ -1,0 +1,5 @@
+colocate exit 1
+server up: --gpu-memory-utilization 0.3 --max-model-len 2048 --weight-transfer-config {"backend":"nccl"}
+test_rollout exit 1
+server train exit 1
+R13_DONE

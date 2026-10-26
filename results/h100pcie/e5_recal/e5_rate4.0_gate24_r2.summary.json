@@ -1,0 +1,80 @@
+{
+  "tag": "e5_rate4.0_gate24_r2",
+  "config": {
+    "workload": "agent",
+    "model": "Qwen/Qwen3-0.6B",
+    "concurrency": 8,
+    "min_requests": 256,
+    "turns": 8,
+    "prefix": 2000,
+    "task": 100,
+    "tool_result": 300,
+    "output": 100,
+    "gap_min": 0.5,
+    "gap_max": 1.5,
+    "seed": 0,
+    "arrival_rate": 4.0,
+    "n_sessions": 96,
+    "gate": 24,
+    "slo_ttft_ms": 500.0,
+    "warmup": true,
+    "tag": "e5_rate4.0_gate24_r2",
+    "out": "results/h100pcie/e5_recal"
+  },
+  "n_requests": 768,
+  "n_sessions": 96,
+  "token_check_failures": 0,
+  "wall_s": 50.23,
+  "client_cpu_util": 0.468,
+  "avg_in_flight": 6.61,
+  "req_per_s": 15.29,
+  "output_tok_per_s": 1528.8,
+  "prompt_tok_per_s": 53508.9,
+  "ttft_ms": {
+    "p50": 47.0,
+    "p90": 72.1,
+    "p99": 103.5,
+    "mean": 51.7
+  },
+  "tpot_ms": {
+    "p50": 3.9,
+    "p90": 4.8,
+    "p99": 5.4,
+    "mean": 3.8
+  },
+  "e2e_ms": {
+    "p50": 437.0,
+    "p90": 537.0,
+    "p99": 583.4,
+    "mean": 432.4
+  },
+  "prefix_cache_hit_rate": 0.9194,
+  "prefix_cache_query_tokens": 2688000.0,
+  "preemptions": 0.0,
+  "kv_usage_max": 0.391,
+  "kv_usage_mean": 0.156,
+  "running_max": 14.0,
+  "waiting_max": 0.0,
+  "user_ttft_ms": {
+    "p50": 49.4,
+    "p90": 107.6,
+    "p99": 14561.1,
+    "mean": 829.1
+  },
+  "slo_ttft_ms": 500.0,
+  "slo_attainment": 0.9062,
+  "goodput_req_per_s": 13.85,
+  "gate_wait_ms": {
+    "p50": 3935.4,
+    "p90": 14418.2,
+    "p99": 15456.9,
+    "mean": 6219.9
+  },
+  "session_e2e_ms": {
+    "p50": 15422.2,
+    "p90": 24522.3,
+    "p99": 26634.5,
+    "mean": 16787.9
+  },
+  "sessions_per_s": 1.911
+}
