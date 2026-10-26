@@ -13,13 +13,15 @@ from transformers import AutoTokenizer  # noqa: E402
 from rl.agent_rollout import correctness_reward, load_gsm8k, make_rollout_func, tool_reward  # noqa: E402
 import rl.agent_rollout as ar  # noqa: E402
 
-MODEL, N_PROMPTS, G = "Qwen/Qwen3-0.6B", 16, 4
+N_PROMPTS, G = 16, 4
 
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--server", default=None, help="vLLM 服务地址，如 http://localhost:8000；不给则在本进程起 vLLM")
-    server = ap.parse_args().server
+    ap.add_argument("--model", default="Qwen/Qwen3-0.6B", help="服务端模式下须与服务端加载的模型一致")
+    a = ap.parse_args()
+    server, MODEL = a.server, a.model
 
     tok = AutoTokenizer.from_pretrained(MODEL)
     if server:
