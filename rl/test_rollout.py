@@ -76,7 +76,9 @@ def main():
                 body = text.split("<output>\n", 1)[-1].rsplit("\n</output>", 1)[0]
                 msgs.append({"role": "user", "content": f"<output>\n{body}\n</output>"})
         ref = tok.apply_chat_template(msgs, tokenize=False, enable_thinking=False)
-        same = full.strip() == ref.strip()
+        # 已知差异：官方模板渲染历史 assistant 轮时去掉空 think 块，rollout 保留（模型确实在其后生成），比较时两边都去掉
+        drop_think = lambda s: s.replace("<think>\n\n</think>\n\n", "").strip()  # noqa: E731
+        same = drop_think(full) == drop_think(ref)
         print(f"template check on episode {idx}: identical={same}")
         if not same:
             import difflib

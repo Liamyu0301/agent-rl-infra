@@ -1,0 +1,30 @@
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/__init__.py:22: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:48: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_STATEFUL_TRAINER_ENGINE = is_vllm_available(min_version="0.28.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:57: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_RESET_PREFIX_CACHE_SUCCESS = is_vllm_available(min_version="0.26.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+Traceback (most recent call last):
+  File "/home/ubuntu/agent-rl-infra/rl/train_grpo.py", line 151, in <module>
+    main()
+  File "/home/ubuntu/agent-rl-infra/rl/train_grpo.py", line 87, in main
+    ar._get_pool()  # 预热沙箱池，避免把容器启动时间算进第一步
+    ^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/rl/agent_rollout.py", line 57, in _get_pool
+    asyncio.run_coroutine_threadsafe(_pool.start(), _loop).result()
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/.local/share/uv/python/cpython-3.12.15-linux-x86_64-gnu/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/ubuntu/agent-rl-infra/sandbox/pool.py", line 215, in start
+    await asyncio.gather(*(self._spawn() for _ in range(self.size)))
+  File "/home/ubuntu/agent-rl-infra/sandbox/pool.py", line 196, in _spawn
+    raise RuntimeError(f"docker run failed: {err}")
+RuntimeError: docker run failed: docker: permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Head "http://%2Fvar%2Frun%2Fdocker.sock/_ping": dial unix /var/run/docker.sock: connect: permission denied
+
+Run 'docker run --help' for more information

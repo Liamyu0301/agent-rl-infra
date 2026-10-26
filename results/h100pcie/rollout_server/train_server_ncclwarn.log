@@ -1,0 +1,51 @@
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/__init__.py:22: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:48: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_STATEFUL_TRAINER_ENGINE = is_vllm_available(min_version="0.28.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:57: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  _HAS_RESET_PREFIX_CACHE_SUCCESS = is_vllm_available(min_version="0.26.0")
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py:42: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if is_vllm_available():
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/311 [00:00<?, ?it/s]Loading weights:  21%|██        | 65/311 [00:00<00:00, 638.11it/s]Loading weights:  43%|████▎     | 133/311 [00:00<00:00, 662.40it/s]Loading weights:  64%|██████▍   | 200/311 [00:00<00:00, 654.29it/s]Loading weights:  86%|████████▌ | 266/311 [00:00<00:00, 626.88it/s]Loading weights: 100%|██████████| 311/311 [00:00<00:00, 625.40it/s]
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py:294: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if not is_vllm_available():
+/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py:215: UserWarning: TRL currently supports vLLM versions from 0.22.0 to 0.31.0. You have version 0.32.0+cu129 installed. We recommend installing a supported version to avoid compatibility issues.
+  if not is_vllm_available():
+NCCL version 2.29.7+cuda12.9
+
+[2026-10-26 03:20:48] 209-20-157-247:19035:19035 [0] init.cc:974 NCCL WARN Duplicate GPU detected : rank 0 and rank 1 both on CUDA device 6000
+Traceback (most recent call last):
+  File "/home/ubuntu/agent-rl-infra/rl/train_grpo.py", line 151, in <module>
+    main()
+  File "/home/ubuntu/agent-rl-infra/rl/train_grpo.py", line 105, in main
+    trainer = trainer_cls(
+              ^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/trainer/grpo_trainer.py", line 1107, in __init__
+    self.vllm_generation = VLLMGeneration(
+                           ^^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py", line 287, in __init__
+    self._init_vllm()
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_generation.py", line 309, in _init_vllm
+    self.vllm_client.init_communicator(device=accelerator.device)
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/trl/generation/vllm_client.py", line 771, in init_communicator
+    self.communicator = open_trainer_endpoint(init_info)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/weight_transfer/nccl_common.py", line 256, in trainer_init
+    return stateless_init_process_group(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/weight_transfer/nccl_common.py", line 159, in stateless_init_process_group
+    return PyNcclCommunicator(pg, device=device)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl.py", line 163, in __init__
+    self._init_comm(device)
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl.py", line 180, in _init_comm
+    self.comm: ncclComm_t = self.nccl.ncclCommInitRank(
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 482, in ncclCommInitRank
+    self.NCCL_CHECK(
+  File "/home/ubuntu/agent-rl-infra/.venv/lib/python3.12/site-packages/vllm/distributed/device_communicators/pynccl_wrapper.py", line 448, in NCCL_CHECK
+    raise RuntimeError(f"NCCL error: {error_str}")
+RuntimeError: NCCL error: invalid usage (run with NCCL_DEBUG=WARN for details)
