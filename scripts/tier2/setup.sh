@@ -10,9 +10,9 @@ uv python install 3.12 && uv venv -p 3.12 .venv && . .venv/bin/activate || exit 
 uv pip install "https://github.com/vllm-project/vllm/releases/download/v0.32.0/vllm-0.32.0%2Bcu129-cp38-abi3-manylinux_2_28_x86_64.whl" \
   torch==2.13.0 torchvision==0.28.0 torchaudio==2.11.0 "torchcodec==0.16.0+cu129" trl==1.16.0 peft==0.21.2 accelerate==1.15.0 \
   --extra-index-url https://download.pytorch.org/whl/cu129 --index-strategy unsafe-best-match || exit 1
-# 结果目录名按卡型命名，不同卡型的数字不混表
-n=$(nvidia-smi -L | wc -l); g=$(nvidia-smi --query-gpu=name --format=csv,noheader | head -1 | tr 'A-Z' 'a-z' | tr -cd 'a-z0-9')
-echo "${n}x${g#nvidia}" > ~/tier2_gpu_tag; cat ~/tier2_gpu_tag
+# 结果目录名按卡型命名（由 Mac 端总控按实例类型写入，如 2xh100sxm5），不同卡型的数字不混表；真实卡名记在 machine.txt
+[ -s ~/tier2_gpu_tag ] || nvidia-smi --query-gpu=name --format=csv,noheader | head -1 | tr 'A-Z' 'a-z' | tr -cd 'a-z0-9' > ~/tier2_gpu_tag
+cat ~/tier2_gpu_tag
 mkdir -p results/tier2_$(cat ~/tier2_gpu_tag)
 { nvidia-smi --query-gpu=index,name,driver_version,memory.total --format=csv; nvidia-smi topo -m; nproc; free -g | head -2; } \
   > results/tier2_$(cat ~/tier2_gpu_tag)/machine.txt 2>&1

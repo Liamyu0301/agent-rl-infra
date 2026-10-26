@@ -6,7 +6,7 @@ SEEDS=$(python -c "import json;print(*json.load(open('$RES/g1.json'))['seeds'])"
 for s in $SEEDS; do
   if [ ! -f "$RES/main17_s$s/DONE" ]; then
     serve_start $M logs/tier2_serve_main_s$s.log || { mark s24_fail; exit 1; }
-    train main17_s$s 1 9000 --model $M --max-steps 200 --save-steps 200 --seed $s --vllm-mode server
+    train main17_s$s 1 14400 --model $M --max-steps 200 --save-steps 200 --seed $s --vllm-mode server
     serve_stop
   fi
   evaluate eval_main17_s$s 1 --model $M --adapter "$RUNS/main17_s$s/final"
