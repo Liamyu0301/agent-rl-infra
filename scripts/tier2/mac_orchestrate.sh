@@ -6,10 +6,12 @@
 #   例：nohup caffeinate -i scripts/tier2/mac_orchestrate.sh gpu_2x_h100_sxm5 us-east-1 8.38 21600 85 2xh100sxm5 400 > ~/tier2_mac.log 2>&1 &
 #   REGION 要在开机前几秒用 /instance-types 现查（有货的区域变得很快）；CAP_CNY 是 G1 关卡的累计花费上限
 # DRY=1：不调 API、不连实例，只打印将要执行的步骤（自检用）
+# TIER=tier3：跑 scripts/tier3/chain.sh（异步 rollout），结果目录、标记、产物目录都换成 tier3
 set -u
+TIER=${TIER:-tier2}
 TYPE=$1 REGION=$2 PRICE=$3 DEADMAN_S=$4 PRIOR_CNY=$5 GPU_TAG=$6 CAP_CNY=$7
 REPO=$(cd "$(dirname "$0")/../.." && pwd)
-A=${ARTIFACTS:-/Users/yumengli/code/agent-rl-infra-artifacts}/tier2; mkdir -p "$A"
+A=${ARTIFACTS:-/Users/yumengli/code/agent-rl-infra-artifacts}/$TIER; mkdir -p "$A"
 API=~/.config/lambda/lambda_api.sh
 KEY=(-i "$HOME/.ssh/id_lambda" -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20)
 log() { echo "$(date '+%F %T') $*"; }
@@ -19,7 +21,7 @@ pull() { if [ "${DRY:-0}" = 1 ]; then echo "DRY rsync $1 -> $2" >&2; else rsync 
 push() { if [ "${DRY:-0}" = 1 ]; then echo "DRY scp $*" >&2; else scp -q "${KEY[@]}" "$@"; fi; }
 
 # 1. 开机，同时挂保险（保险独立于本脚本：本脚本死了也会按时终止）
-R=$(api POST /instance-operations/launch "{\"region_name\":\"$REGION\",\"instance_type_name\":\"$TYPE\",\"ssh_key_names\":[\"agent-rl-infra-lambda\"],\"quantity\":1,\"name\":\"agent-rl-tier2\"}")
+R=$(api POST /instance-operations/launch "{\"region_name\":\"$REGION\",\"instance_type_name\":\"$TYPE\",\"ssh_key_names\":[\"agent-rl-infra-lambda\"],\"quantity\":1,\"name\":\"agent-rl-$TIER\"}")
 ID=$(echo "$R" | python3 -c 'import json,sys;print(json.load(sys.stdin)["data"]["instance_ids"][0])') || { log "launch failed: $R"; exit 1; }
 LAUNCH=$(date +%s); echo "$ID" > "$A/instance_id"; echo "$LAUNCH" > "$A/launch_epoch"
 [ "${DRY:-0}" = 1 ] || nohup caffeinate -i /Users/yumengli/code/agent-rl-infra-artifacts/lambda/deadman.sh "$ID" "$DEADMAN_S" > "$A/deadman.log" 2>&1 &
@@ -49,25 +51,25 @@ sleep 20  # sshd 刚起来时偶尔拒绝连接
 push "$REPO/scripts/tier2/setup.sh" "ubuntu@$IP:"
 echo "{\"launch_epoch\": $LAUNCH, \"usd_per_hour\": $PRICE, \"prior_cny\": $PRIOR_CNY, \"cap_cny\": $CAP_CNY, \"cny_per_usd\": 7.2}" > "$A/budget.json"
 echo "$GPU_TAG" > "$A/tier2_gpu_tag"
-push "$A/budget.json" "ubuntu@$IP:tier2_budget.json"
+push "$A/budget.json" "ubuntu@$IP:${TIER}_budget.json"
 push "$A/tier2_gpu_tag" "ubuntu@$IP:tier2_gpu_tag"
 rsh 'timeout 1800 bash ~/setup.sh > ~/setup.log 2>&1; tail -1 ~/setup.log'
 pull setup.log "$A/"
 [ "${DRY:-0}" = 1 ] || grep -q SETUP_DONE "$A/setup.log" || terminate "setup failed"
 
 # 4. 新登录启动流程（docker 组此时已生效；再包一层 sg docker 以防万一）
-printf '%s\n' 'pgrep -f "bash .*tier2/chain.sh" > /dev/null && echo alive || echo dead' > "$A/alive.sh"
+printf '%s\n' "pgrep -f \"bash .*$TIER/chain.sh\" > /dev/null && echo alive || echo dead" > "$A/alive.sh"
 push "$A/alive.sh" "ubuntu@$IP:"
 # 这条 ssh 在实测中一直挂到链条结束才返回（第一次开机时本脚本因此 6 分钟没同步）：
 # 远程用 setsid 脱离会话，本地也放到后台，不等它返回
-rsh 'cd ~/agent-rl-infra && setsid nohup sg docker -c "bash scripts/tier2/chain.sh > ~/chain.log 2>&1" > /dev/null 2>&1 < /dev/null &' \
+rsh "cd ~/agent-rl-infra && setsid nohup sg docker -c \"bash scripts/$TIER/chain.sh > ~/chain.log 2>&1\" > /dev/null 2>&1 < /dev/null &" \
   > "$A/start_chain.ssh.log" 2>&1 &
 sleep 15
 log "chain started (ssh pid $!)"
 
 # 5. 每分钟同步结果；按标记决定何时终止
 # 拉整个 results/：其他子目录与本地一致，rsync 不会重复传；避免依赖远程通配符展开
-sync_all() { pull agent-rl-infra/results/ "$REPO/results/"; pull tier2_markers/ "$A/markers/"; pull chain.log "$A/"; }
+sync_all() { pull agent-rl-infra/results/ "$REPO/results/"; pull ${TIER}_markers/ "$A/markers/"; pull chain.log "$A/"; }
 while true; do
   sleep 60
   sync_all
@@ -78,11 +80,11 @@ while true; do
 done
 
 # 6. 收尾：LoRA 适配器下载回 Mac（不进 git），结果推送 GitHub，然后终止
-for d in $(rsh 'ls -d ~/agent-rl-infra/runs/tier2/main17_s*/final 2>/dev/null'); do
+for d in $(rsh "ls -d ~/agent-rl-infra/runs/$TIER/*main17_s*/final 2>/dev/null"); do
   n=$(basename "$(dirname "$d")"); mkdir -p "$A/adapters/$n"; pull "$d/" "$A/adapters/$n/"
 done
 if [ "${DRY:-0}" != 1 ]; then
-  cd "$REPO" && git add "results/tier2_$GPU_TAG" && git commit -q -m "Tier 2 results ($TYPE): ${FINAL:-dry}
+  cd "$REPO" && git add "results/${TIER}_$GPU_TAG" && git commit -q -m "$TIER results ($TYPE): ${FINAL:-dry}
 
 Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>" && git push -q origin main && log "pushed $(git log -1 --format=%h)"
 fi

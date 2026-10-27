@@ -32,6 +32,8 @@ def main():
     ap.add_argument("--seed", type=int, default=42, help="随机种子（影响数据顺序和初始化）；用于重复实验")
     ap.add_argument("--fused-is", choices=["off", "check", "on"], default="off",
                     help="on=把 vLLM IS 纠偏挪进损失、去掉重复前向（rl/fused_is.py）；check=只并行计算并记录差异")
+    ap.add_argument("--async-rollout", action="store_true",
+                    help="落后一步的异步 rollout：生成下一批与训练上一批重叠（rl/async_rollout.py，需 server 模式）")
     ap.add_argument("--profile", action="store_true", help="分段计时（每段前后同步 GPU，结果写进 steps.jsonl）")
     ap.add_argument("--out", default="runs/smoke")
     args = ap.parse_args()
@@ -51,6 +53,7 @@ def main():
 
     seg = collections.defaultdict(float)  # 当前优化步内各段累计耗时（秒）
     state = {"in_gen": False}
+    is_masked = []  # 本步生成数据里被 IS 纠偏屏蔽（比值置 0）的序列占比，StepTimer 写进 steps.jsonl
 
     def timed(name, fn):
         """计时包装：前后各同步一次 GPU，保证异步的 CUDA 计算被算进正确的段。"""
@@ -74,6 +77,9 @@ def main():
 
         def on_step_end(self, a, state, control, **kw):
             rec = {"step": state.global_step, "wall_s": round(time.perf_counter() - self.t, 2), "t": time.time()}
+            if is_masked:
+                rec["is_masked_frac"] = round(sum(is_masked) / len(is_masked), 4)
+                is_masked.clear()
             if args.profile:
                 rec["segments"] = {k: round(v, 3) for k, v in seg.items()}
                 seg.clear()
@@ -125,6 +131,23 @@ def main():
                 yield name, c
 
         trainer.vllm_generation._iter_named_params = iter_params_cloned
+    if args.async_rollout:
+        assert args.vllm_mode == "server", "异步 rollout 需要训推分离（server 模式）"
+        import rl.async_rollout as asr
+        from transformers import AutoTokenizer
+        async_hooks = asr.install(trainer, os.path.join(args.out, "async.jsonl"),
+                                  tokenizer_factory=lambda: AutoTokenizer.from_pretrained(args.model),
+                                  seg=seg if args.profile else None)
+    gen_and_score_is = trainer._generate_and_score_completions
+
+    def gen_and_score_log_is(*a, **kw):
+        out = gen_and_score_is(*a, **kw)
+        r = out.get("importance_sampling_ratio")
+        if r is not None:
+            is_masked.append((r == 0).float().mean().item())
+        return out
+
+    trainer._generate_and_score_completions = gen_and_score_log_is
     if args.profile:
         # 分段：_prepare_inputs 在缓冲区空时触发整轮"生成+打分"（含权重同步、rollout、旧 logprob 重算、算奖励）；
         # training_step 包含 _prepare_inputs，所以 前向+反向 = training_step − prepare_inputs。
@@ -138,7 +161,10 @@ def main():
                 state["in_gen"] = False
 
         trainer._generate_and_score_completions = timed("gen_and_score_total", gen_and_score_flagged)
-        trainer.vllm_generation.sync_weights = timed("sync_weights", trainer.vllm_generation.sync_weights)
+        if args.async_rollout:  # 只计真正的权重同步；等后台生成的时间单独记在 gen_wait
+            async_hooks.sync = timed("sync_weights", async_hooks.sync)
+        else:
+            trainer.vllm_generation.sync_weights = timed("sync_weights", trainer.vllm_generation.sync_weights)
         trainer.rollout_func = timed("rollout", trainer.rollout_func)
         trainer._calculate_rewards = timed("rewards", trainer._calculate_rewards)
         logps = trainer._get_per_token_logps_and_entropies
@@ -157,6 +183,8 @@ def main():
     if args.save_steps:
         trainer.save_model(os.path.join(args.out, "final"))
 
+    if args.async_rollout:
+        async_hooks.drain()  # 最后一步在后台多生成的一批要先等完，否则下面关容器池时它还在用
     import asyncio
     asyncio.run_coroutine_threadsafe(ar._pool.close(), ar._loop).result()
 

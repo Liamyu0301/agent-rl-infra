@@ -6,9 +6,10 @@ cd "$REPO" || exit 1
 export PATH=$REPO/.venv/bin:$HOME/.local/bin:$PATH
 export VLLM_USE_FLASHINFER_SAMPLER=1 TRL_EXPERIMENTAL_SILENCE=1
 TAG=$(cat "$HOME/tier2_gpu_tag" 2>/dev/null || echo unknown)  # setup.sh 写入，例如 2xh100sxm5
-RES=results/tier2_$TAG       # 小文件：下载回 Mac 并提交
-RUNS=runs/tier2              # 训练输出（含 LoRA 适配器，不进 git）
-MK=$HOME/tier2_markers       # 阶段完成标记，Mac 端据此下载结果 / 决定是否终止
+TIER=${TIER:-tier2}          # 第 3 档（异步 rollout）复用本文件：export TIER=tier3
+RES=results/${TIER}_$TAG     # 小文件：下载回 Mac 并提交
+RUNS=runs/$TIER              # 训练输出（含 LoRA 适配器，不进 git）
+MK=$HOME/${TIER}_markers     # 阶段完成标记，Mac 端据此下载结果 / 决定是否终止
 mkdir -p "$RES" "$RUNS" "$MK" logs
 
 run() { echo "+ $*" >&2; [ "$DRY" = 1 ] && return 0; "$@"; }
