@@ -3,6 +3,7 @@
 #   3.1 1.7B 同步基线 30 步（--profile）：同一台机器上重测，不拿第 2 档的数字比
 #   3.2 1.7B 异步 30 步（--profile）→ G0：落后步数恰好为 1、权重同步与生成不重叠、训练跑完；不通过就停
 #   3.3 异步 + 冗余前向优化 30 步（只计时）
+#   G1：异步 30 步每步耗时必须小于同步（否则流水线没起作用，不花钱跑正式训练），且预测花费不超上限
 #   3.4 异步 200 步种子 42 + 完整测试集评测 → G1：准确率 ≥ 78.2%（第 2 档同步同种子 81.2% − 3 个点）且预测花费不超上限，才跑种子 1
 # 与第 2 档 main17 相同：200 步、lr 3e-5、不开冗余前向优化、IS 纠偏用 TRL 默认（sequence_mask，阈值 3.0），只差异步这一个变量。
 # 用法（实例上，setup.sh 之后的新登录）：sg docker -c "bash scripts/tier3/chain.sh"
@@ -10,6 +11,8 @@ export TIER=tier3
 source "$(dirname "$0")/../tier2/common.sh"
 A3="python scripts/tier3/analyze.py"
 cp "results/tier2_$TAG/machine.txt" "$RES/" 2>/dev/null
+# setup.sh 把本机信息写进了第 2 档的目录；还原成已提交的版本，免得 Mac 端同步回去覆盖第 2 档的记录
+[ "$DRY" = 1 ] || git checkout -- "results/tier2_$TAG/machine.txt" 2>/dev/null
 M=Qwen/Qwen3-1.7B; P="--model $M --max-steps 30 --seed 42 --profile --vllm-mode server"
 
 run python rl/test_async_rollout.py > "$RES/test_async_rollout.txt" 2>&1 || { mark g0_fail; exit 1; }

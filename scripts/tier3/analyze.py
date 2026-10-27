@@ -1,7 +1,7 @@
 """第 3 档（异步 rollout）关卡判断与汇总（规则在开机前定好，写在这里，运行中不改）。
 
   analyze.py g0 RES        G0：异步流水线是否正确（sync17 / async17 都跑完 + 落后步数恰好为 1 + 同步与生成不重叠）；退出码 0 = 通过
-  analyze.py g1 RES RUN    按 RUN 的实测每步耗时预测花费，决定种子 42 / 1 能否开跑，写 RES/g1.json
+  analyze.py g1 RES RUN    RUN 每步耗时须小于 sync17（异步确实更快），再按它预测花费，决定种子 42 / 1 能否开跑，写 RES/g1.json
   analyze.py g1b RES       种子 1 开跑前复核：种子 42 准确率 ≥ 78.2% 且花费仍不超上限，写 RES/g1b.json；退出码 0 = 跑
   analyze.py summary RES   汇总表（每步耗时、两卡同时工作占比、IS 屏蔽比例、logprob 差、等待时间），写 RES/summary.md
 """
@@ -47,8 +47,12 @@ def g1(res, run):
     """预算规则：与第 2 档相同的预测方法（30 步计时 × 1.2 估 200 步平均），累计花费不超过 cap_cny 才开跑。"""
     b = json.load(open(BUDGET))
     measured, _ = seg_means(res, run)
+    base, _ = seg_means(res, "sync17")
     if measured is None:
         dec = {"seeds": [], "reason": "没有计时数据，不跑正式训练"}
+    elif base is None or measured >= base:
+        dec = {"seeds": [], "s_per_step_measured": measured and round(measured, 2),
+               "s_per_step_sync17": base and round(base, 2), "reason": "异步不比同步快（或缺同步基线），不跑正式训练"}
     else:
         sps = measured * 1.2
         elapsed_h = (time.time() - b["launch_epoch"]) / 3600
@@ -56,7 +60,8 @@ def g1(res, run):
         tail_h = 10 / 60
         cny = lambda n: _cny(b, elapsed_h + n * seed_h + tail_h)  # noqa: E731
         seeds = [42, 1] if cny(2) <= b["cap_cny"] else [42] if cny(1) <= b["cap_cny"] else []
-        dec = {"seeds": seeds, "s_per_step_measured": round(measured, 2), "s_per_step_projected": round(sps, 2),
+        dec = {"seeds": seeds, "s_per_step_measured": round(measured, 2), "s_per_step_sync17": round(base, 2),
+               "s_per_step_projected": round(sps, 2),
                "elapsed_h": round(elapsed_h, 2), "projected_cny_1seed": round(cny(1)),
                "projected_cny_2seeds": round(cny(2)), "cap_cny": b["cap_cny"],
                "reason": {2: "预测累计花费不超过上限", 1: "两个种子会超上限，只跑种子 42",
