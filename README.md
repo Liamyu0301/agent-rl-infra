@@ -123,6 +123,14 @@ GPU 0 跑 vLLM 服务端，GPU 1 跑 TRL 训练，每步训练完经 NCCL 把合
 - **冗余前向优化在服务端模式下同样数值等价**：logprob 逐位相同，IS 比值最大差 4.8×10⁻⁷，每步去掉 1.21 s（12.4%）。
 - **1.7B 训练结果**：GSM8K 完整测试集准确率 45.4% → 81.2% / 82.7%（种子 42 / 1），同配置的 0.6B 是 67.0% / 66.5%；每个种子 200 步训练约 30 分钟。
 
+### 第 4.5 阶段：异步 rollout（落后一步的流水线，同一台 2×H100 SXM5）
+
+`rl/async_rollout.py` 在 TRL GRPOTrainer 外面包了两层：第 t 步在后台生成新一批的同时训练上一批，同步权重前先等后台生成结束（否则一批数据会混用新旧两套权重）。不改 TRL 源码。`rl/test_async_rollout.py` 用假训练器检查落后步数、同步与生成是否重叠、答案是否跟对题目；删掉"先等再同步"后它会报错。
+
+- **每步 8.42 s → 5.81 s（−31%）**：两张卡同时忙的时间从 2% 升到 37%，每步等后台生成只要 0.03 s，瓶颈转到训练卡（同一台机器，1.7B，30 步）。代价是训练端各段慢了约 10%，推测是后台线程争 CPU。
+- **效果不变**：200 步正式训练准确率 82.2% / 82.0%（种子 42 / 1），同步模式是 81.2% / 82.7%。被 IS 纠偏屏蔽的序列比例（约 4%）和 logprob 差都没有因为数据落后一步而上升。
+- 叠加冗余前向优化只再快 6%（5.45 s）：训练端变快后，瓶颈回到生成。
+
 ## 目录
 
 ```
@@ -130,6 +138,7 @@ bench/       Agent 负载推理压测（agent_bench.py）与 vLLM 服务启停�
 sandbox/     代码沙箱（pool.py）、安全测试（security_test.py）、吞吐压测
 rl/          rollout 与奖励（agent_rollout.py）、训练（train_grpo.py）、评测（eval_rollout.py）、
              冗余前向优化（fused_is.py）、rollout 自检（test_rollout.py）
+             异步 rollout（async_rollout.py）及其自检（test_async_rollout.py）
 eval/        第 0 阶段的 GSM8K 基线评测（chat 接口）
 scripts/     vLLM 启动脚本
 results/     第 0–2 阶段的实验结果
