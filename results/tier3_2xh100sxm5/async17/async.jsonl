@@ -1,0 +1,60 @@
+{"event": "sync", "step": 0, "n": 0, "start": 1793149075.2656834, "end": 1793149075.494773}
+{"event": "batch", "train_step": 0, "gen_step": 0, "staleness": 0, "gen_start": 1793149075.4948997, "gen_end": 1793149080.3489053, "wait_s": 4.854, "n": 64}
+{"event": "sync", "step": 1, "n": 1, "start": 1793149087.9605339, "end": 1793149088.0541177}
+{"event": "batch", "train_step": 1, "gen_step": 0, "staleness": 1, "gen_start": 1793149080.3490615, "gen_end": 1793149085.2100213, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 2, "n": 2, "start": 1793149095.033925, "end": 1793149095.12675}
+{"event": "batch", "train_step": 2, "gen_step": 1, "staleness": 1, "gen_start": 1793149088.0542562, "gen_end": 1793149092.2750714, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 3, "n": 3, "start": 1793149102.1989617, "end": 1793149102.2912889}
+{"event": "batch", "train_step": 3, "gen_step": 2, "staleness": 1, "gen_start": 1793149095.13044, "gen_end": 1793149098.4486074, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 4, "n": 4, "start": 1793149108.2021267, "end": 1793149108.294932}
+{"event": "batch", "train_step": 4, "gen_step": 3, "staleness": 1, "gen_start": 1793149102.2959735, "gen_end": 1793149106.3147335, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 5, "n": 5, "start": 1793149114.4236197, "end": 1793149114.5154736}
+{"event": "batch", "train_step": 5, "gen_step": 4, "staleness": 1, "gen_start": 1793149108.2993283, "gen_end": 1793149111.7587073, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 6, "n": 6, "start": 1793149121.1309736, "end": 1793149121.2233233}
+{"event": "batch", "train_step": 6, "gen_step": 5, "staleness": 1, "gen_start": 1793149114.5156004, "gen_end": 1793149118.7132616, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 7, "n": 7, "start": 1793149127.3429565, "end": 1793149127.4344711}
+{"event": "batch", "train_step": 7, "gen_step": 6, "staleness": 1, "gen_start": 1793149121.227719, "gen_end": 1793149125.2057781, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 8, "n": 8, "start": 1793149134.085269, "end": 1793149134.1778405}
+{"event": "batch", "train_step": 8, "gen_step": 7, "staleness": 1, "gen_start": 1793149127.4386344, "gen_end": 1793149130.4714181, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 9, "n": 9, "start": 1793149138.8984056, "end": 1793149138.991225}
+{"event": "batch", "train_step": 9, "gen_step": 8, "staleness": 1, "gen_start": 1793149134.1820657, "gen_end": 1793149138.30487, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 10, "n": 10, "start": 1793149145.0969367, "end": 1793149145.1887531}
+{"event": "batch", "train_step": 10, "gen_step": 9, "staleness": 1, "gen_start": 1793149138.996231, "gen_end": 1793149141.6095533, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 11, "n": 11, "start": 1793149149.120227, "end": 1793149149.2121987}
+{"event": "batch", "train_step": 11, "gen_step": 10, "staleness": 1, "gen_start": 1793149145.1888502, "gen_end": 1793149149.1004872, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 12, "n": 12, "start": 1793149156.2210388, "end": 1793149156.3142679}
+{"event": "batch", "train_step": 12, "gen_step": 11, "staleness": 1, "gen_start": 1793149149.2166922, "gen_end": 1793149151.9471738, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 13, "n": 13, "start": 1793149160.8814635, "end": 1793149160.973263}
+{"event": "batch", "train_step": 13, "gen_step": 12, "staleness": 1, "gen_start": 1793149156.3144078, "gen_end": 1793149160.18611, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 14, "n": 14, "start": 1793149168.1243188, "end": 1793149168.2164965}
+{"event": "batch", "train_step": 14, "gen_step": 13, "staleness": 1, "gen_start": 1793149160.9784083, "gen_end": 1793149163.9148588, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 15, "n": 15, "start": 1793149173.4086318, "end": 1793149173.5011327}
+{"event": "batch", "train_step": 15, "gen_step": 14, "staleness": 1, "gen_start": 1793149168.2166271, "gen_end": 1793149173.4085345, "wait_s": 0.575, "n": 64}
+{"event": "sync", "step": 16, "n": 16, "start": 1793149180.623049, "end": 1793149180.7152827}
+{"event": "batch", "train_step": 16, "gen_step": 15, "staleness": 1, "gen_start": 1793149173.506491, "gen_end": 1793149176.32739, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 17, "n": 17, "start": 1793149184.7319489, "end": 1793149184.8234067}
+{"event": "batch", "train_step": 17, "gen_step": 16, "staleness": 1, "gen_start": 1793149180.7154064, "gen_end": 1793149184.2849913, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 18, "n": 18, "start": 1793149189.3288538, "end": 1793149189.4210005}
+{"event": "batch", "train_step": 18, "gen_step": 17, "staleness": 1, "gen_start": 1793149184.823512, "gen_end": 1793149188.1130173, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 19, "n": 19, "start": 1793149193.863237, "end": 1793149193.9552188}
+{"event": "batch", "train_step": 19, "gen_step": 18, "staleness": 1, "gen_start": 1793149189.4211178, "gen_end": 1793149193.8151631, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 20, "n": 20, "start": 1793149200.266768, "end": 1793149200.3587582}
+{"event": "batch", "train_step": 20, "gen_step": 19, "staleness": 1, "gen_start": 1793149193.9601054, "gen_end": 1793149197.6748333, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 21, "n": 21, "start": 1793149206.3014922, "end": 1793149206.3962717}
+{"event": "batch", "train_step": 21, "gen_step": 20, "staleness": 1, "gen_start": 1793149200.3626134, "gen_end": 1793149204.5536065, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 22, "n": 22, "start": 1793149212.5140297, "end": 1793149212.606269}
+{"event": "batch", "train_step": 22, "gen_step": 21, "staleness": 1, "gen_start": 1793149206.3963878, "gen_end": 1793149210.4147766, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 23, "n": 23, "start": 1793149219.3516705, "end": 1793149219.4437833}
+{"event": "batch", "train_step": 23, "gen_step": 22, "staleness": 1, "gen_start": 1793149212.611321, "gen_end": 1793149216.032919, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 24, "n": 24, "start": 1793149225.0947833, "end": 1793149225.1878428}
+{"event": "batch", "train_step": 24, "gen_step": 23, "staleness": 1, "gen_start": 1793149219.4439137, "gen_end": 1793149222.4119828, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 25, "n": 25, "start": 1793149229.0957172, "end": 1793149229.1880538}
+{"event": "batch", "train_step": 25, "gen_step": 24, "staleness": 1, "gen_start": 1793149225.1879537, "gen_end": 1793149228.7867556, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 26, "n": 26, "start": 1793149235.199223, "end": 1793149235.2912962}
+{"event": "batch", "train_step": 26, "gen_step": 25, "staleness": 1, "gen_start": 1793149229.1925488, "gen_end": 1793149231.8776603, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 27, "n": 27, "start": 1793149239.8842416, "end": 1793149239.9762962}
+{"event": "batch", "train_step": 27, "gen_step": 26, "staleness": 1, "gen_start": 1793149235.2956622, "gen_end": 1793149237.5442617, "wait_s": 0.0, "n": 64}
+{"event": "sync", "step": 28, "n": 28, "start": 1793149243.7472646, "end": 1793149243.83858}
+{"event": "batch", "train_step": 28, "gen_step": 27, "staleness": 1, "gen_start": 1793149239.9764166, "gen_end": 1793149243.7470884, "wait_s": 0.235, "n": 64}
+{"event": "sync", "step": 29, "n": 29, "start": 1793149250.8838801, "end": 1793149250.9766743}
+{"event": "batch", "train_step": 29, "gen_step": 28, "staleness": 1, "gen_start": 1793149243.8430328, "gen_end": 1793149249.501857, "wait_s": 0.0, "n": 64}

@@ -1,0 +1,16 @@
+{
+  "model": "runs/tier3/eval_amain17_s42/merged",
+  "adapter": "runs/tier3/amain17_s42/final",
+  "prompt": "forced",
+  "n": 1319,
+  "wall_s": 35.5,
+  "accuracy": 0.8218,
+  "tool_use_rate": 0.9856,
+  "useful_episode_rate": 0.981,
+  "tool_calls": 1394,
+  "useful_call_rate": 0.977,
+  "bare_fence_rate": 0.0629,
+  "answer_format_rate": 0.9833,
+  "turns_mean": 2.047,
+  "model_tokens_mean": 295.6
+}

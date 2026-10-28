@@ -1,0 +1,14 @@
+{
+  "sync_ok": true,
+  "async_ok": true,
+  "batches": 30,
+  "syncs": 30,
+  "staleness_ok": true,
+  "staleness_values": [
+    0,
+    1
+  ],
+  "sync_gen_overlaps": 0,
+  "wait_s_mean": 0.028,
+  "pass": true
+}

@@ -1,0 +1,14 @@
+{
+  "seeds": [
+    42,
+    1
+  ],
+  "s_per_step_measured": 5.81,
+  "s_per_step_sync17": 8.42,
+  "s_per_step_projected": 6.97,
+  "elapsed_h": 0.3,
+  "projected_cny_1seed": 247,
+  "projected_cny_2seeds": 278,
+  "cap_cny": 369,
+  "reason": "预测累计花费不超过上限"
+}

@@ -1,0 +1,9 @@
+{
+  "run_seed1": true,
+  "acc_s42": 0.8218,
+  "acc_min": 0.782,
+  "s_per_step_s42": 5.81,
+  "projected_cny": 265,
+  "cap_cny": 369,
+  "reason": "通过"
+}
